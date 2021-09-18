@@ -1,5 +1,5 @@
 const environments = {
-    baseURL: "http://localhost:3000"
+    baseURL: "https://api.tonet.me"
 }
 
 export {environments}
