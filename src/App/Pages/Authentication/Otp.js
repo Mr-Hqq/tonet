@@ -4,6 +4,7 @@ import OtpInput from 'react-otp-input';
 import axios from "axios"
 import {Link, Redirect} from "react-router-dom";
 import flag from "../../Assets/Images/flag.svg";
+import tick from "../../Assets/Images/tick.svg";
 import NumberFormat from 'react-number-format';
 
 function Otp() {
@@ -11,6 +12,8 @@ function Otp() {
     const [phoneNumber, setPhoneNumber] = useState("")
     const [otp, setOtp] = useState("")
     const [isLoading, setIsLoading] = useState(false)
+    const [hidden, setHidden] = useState(true)
+
     const sendRequest = useCallback(async () => {
         if (isLoading) return
         setIsLoading(true)
@@ -21,7 +24,7 @@ function Otp() {
     const sendRequestOtp = useCallback(async () => {
         if (isLoading) return
         setIsLoading(true)
-        const token = await axios.post("/auth/otp-login", {phoneNumber: phoneNumber})
+        const token = await axios.post("/auth/otp-login", {phoneNumber: phoneNumber, code: otp})
         const decodedToken = parseJwt(token.data)
         const isCompleted = decodedToken.status === "COMPLETED"
         setIsLoading(false)
@@ -46,7 +49,7 @@ function Otp() {
                     sign
                     up whit your phone numbers to <br/> manage your tonet account</p>}
                 <div className="Rectangle-12" style={{marginBottom: 15}}>
-                    {isOtp ? otpView(setOtp, otp, sendRequestOtp) : phoneNumberView(setIsOtp, setPhoneNumber, phoneNumber, sendRequest)}
+                    {isOtp ? otpView(setOtp, otp, sendRequestOtp) : phoneNumberView(setIsOtp, setPhoneNumber, phoneNumber, sendRequest, hidden, setHidden)}
                 </div>
                 {
                     isOtp ? <a onClick={() => {
@@ -100,19 +103,26 @@ const otpView = (setOtp, otp, sendRequestOtp) => {
     )
 }
 
-const phoneNumberView = (setOtp, setPhoneNumber, phoneNumber, sendRequest) => {
+const phoneNumberView = (setOtp, setPhoneNumber, phoneNumber, sendRequest, hidden, setHidden) => {
     return (
         <div>
             <div style={{position: "relative"}}>
                 <img style={{position: "absolute", top: "35%", left: "7%"}} src={flag}
                      className="Mask-Group-7"/>
+                <img hidden={hidden} style={{position: "absolute", top: "39%", right: "7%"}} src={tick}
+                     className="Mask-Group-7"/>
                 <span style={{position: "absolute", top: "39%", left: "14.5%", fontSize: 12}}
                       className="Mask-Group-7">(+98)</span>
-                <input type="text" placeholder={"enter your phone number..."} onChange={(event => {
+                <input type="text"  placeholder={"enter your phone number..."} onChange={(event => {
+                    if(event.target.value.match(/^09[0-9]\d{8}$/) || event.target.value.match(/^9[0-9]\d{8}$/)){
+                        setHidden(false)
+                    }else{
+                        setHidden(true)
+                    }
                     setPhoneNumber(event.target.value)
                 })} value={phoneNumber} className="login-input"/>
             </div>
-            <button onClick={() => {
+            <button disabled={hidden} style={hidden? {opacity: 0.5}: {opacity: 1}} onClick={() => {
                 sendRequest()
             }} className="Rectangle-16">CONTINUE
             </button>

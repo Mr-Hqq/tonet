@@ -245,6 +245,10 @@ img.Group-93 {
     border: none;
 }
 
+.Rectangle-16:focus{
+    border: 2px solid;
+}
+
 .Rectangle-16-absolute {
     width: 316px;
     height: 48px;
@@ -344,7 +348,7 @@ img.Group-97 {
 .login-input {
     width: 420px;
     height: 56px;
-    padding: 17px 17px 17px 80px;
+    padding: 17px 17px 17px 90px;
     opacity: 0.9;
     border-radius: 11px;
     box-shadow: 0 1px 17px 0 rgba(0, 0, 0, 0.05);
